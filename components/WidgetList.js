@@ -35,8 +35,8 @@ class WidgetList extends Component {
             {/*subtitle={widget.description}*/}
             {/*title={widget.title}/>))}*/}
 
-            <Button title="Go To Assignment" onPress={() => this.props.navigation.navigate("ShowAssignment", {lessonId: this.state.lessonId})}/>
-          <Button title="Go To Exam"/>
+            <Button title="Show All Assignments" onPress={() => this.props.navigation.navigate("ShowAssignment", {lessonId: this.state.lessonId})}/>
+          <Button title="Show All Exams" onPress={() => this.props.navigation.navigate("ShowExam", {lessonId: this.state.lessonId})}/>
 
             {/*<Picker*/}
               {/*onValueChange={(itemValue, itemIndex) =>*/}

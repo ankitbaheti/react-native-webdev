@@ -27,6 +27,15 @@ class ShowAssignment extends React.Component{
 
     }
 
+    componentWillReceiveProps(newProps){
+        const newLessonId = newProps.navigation.getParam("lessonId")
+        fetch("http://10.0.0.197:8080/api/lesson/"+newLessonId+"/assignment")
+            .then(response => (response.json()))
+            .then(assignments => {
+                this.setState({assignments: assignments})
+            })
+    }
+
     render(){
         return (
             <View>
@@ -34,7 +43,7 @@ class ShowAssignment extends React.Component{
                     (assignment, index) => (
                         <ListItem
                             onPress={() => this.props.navigation
-                                .navigate("Assignment", {assignment: assignment, lessonId: this.state.lessonId})}
+                                .navigate("Assignment", {assignment: assignment, lessonId: this.state.lessonId, editable: true})}
                             key={index}
                             subtitle={assignment.description}
                             title={assignment.title}/>))}

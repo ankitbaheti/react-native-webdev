@@ -3,24 +3,36 @@ import {View, TextInput, ScrollView} from 'react-native'
 import {Text, FormLabel, FormInput, FormValidationMessage, Divider, Button} from 'react-native-elements'
 
 class Assignment extends React.Component {
+
+    static navigationOptions = {title: 'New Assignment'}
     constructor(props){
         super(props)
         this.state = {
+            assignmentId: 1,
+            editable: false,
             lessonId: 1,
             title: '',
             description: '',
             points: 0
         }
-        this.createAssignment = this.createAssignment.bind(this)
+        this.createAssignment = this.createAssignment.bind(this);
+        this.updateAssignment = this.updateAssignment.bind(this);
     }
 
     componentDidMount() {
         const lessonId = this.props.navigation.getParam("lessonId")
         const assignment = this.props.navigation.getParam("assignment")
+        const editable = this.props.navigation.getParam("editable");
+        console.log(assignment);
         if(assignment === undefined)
             this.setState({lessonId: lessonId})
         else
-            this.setState({lessonId: lessonId, title: assignment.title, description: assignment.description, points: assignment.points})
+            this.setState({lessonId: lessonId,
+                editable: editable,
+                assignmentId: assignment.id,
+                title: assignment.title,
+                description: assignment.description,
+                points: assignment.points})
     }
 
 
@@ -35,6 +47,18 @@ class Assignment extends React.Component {
                 points: this.state.points}),
             headers: { 'Content-Type': 'application/json' },
             method: 'POST'
+        }).then(function (response){
+            return response.json();
+        })
+    }
+
+    updateAssignment(){
+        return fetch("http://10.0.0.197:8080/api/assignment/"+this.state.assignmentId,{
+            body: JSON.stringify({title: this.state.title,
+                description: this.state.description,
+                points: this.state.points}),
+            headers: { 'Content-Type': 'application/json' },
+            method: 'PUT'
         }).then(function (response){
             return response.json();
         })
@@ -94,11 +118,18 @@ class Assignment extends React.Component {
                 <FormInput/>
 
                 <View style={{flexDirection: 'row'}}>
-                    <Button title="Cancel"/>
-                    <Button title="Submit"/>
+                    <Button title="Cancel"
+                            onPress={() => this.props.navigation.goBack()}/>
+                    {!this.state.editable ?
+                    <Button title="Submit"
+                            onPress={() => {
+                                this.createAssignment();
+                                this.props.navigation.navigate("ShowAssignment", {lessonId: this.state.lessonId});}}/> :
+                        <Button title="Update"
+                                onPress={() => {
+                                    this.updateAssignment();
+                                    this.props.navigation.navigate("ShowAssignment", {lessonId: this.state.lessonId});}}/>}
                 </View>
-                <Button title="Save"
-                        onPress={() => this.createAssignment()}/>
                 <View style={{height: 60}}/>
 
             </ScrollView>
