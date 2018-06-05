@@ -23,7 +23,6 @@ class Assignment extends React.Component {
         const lessonId = this.props.navigation.getParam("lessonId")
         const assignment = this.props.navigation.getParam("assignment")
         const editable = this.props.navigation.getParam("editable");
-        console.log(assignment);
         if(assignment === undefined)
             this.setState({lessonId: lessonId})
         else

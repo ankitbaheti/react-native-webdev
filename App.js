@@ -3,7 +3,6 @@ import { StyleSheet, Text, View, StatusBar, ScrollView } from 'react-native';
 import FixedHeader from './elements/FixedHeader'
 import TextHeadings from './elements/TextHeadings'
 import Icons from './elements/Icons'
-import Exam from './elements/Exam'
 import QuestionTypeButtonGroupChooser from './elements/QuestionTypeButtonGroupChooser'
 import QuestionTypePicker from './elements/QuestionTypePicker'
 import TrueFalseQuestionEditor from './elements/TrueFalseQuestionEditor'
@@ -19,6 +18,8 @@ import QuestionList from './components/QuestionList'
 import Assignment from './components/Assignment'
 import ShowAssignment from './components/ShowAssignment'
 import ShowExam from "./components/ShowExam";
+import Exam from "./components/Exam"
+import QuestionsForExam from "./components/QuestionsForExam"
 
 class Home extends React.Component {
     static navigationOptions = {
@@ -97,6 +98,8 @@ const App = createStackNavigator({
     Assignment,
     ShowAssignment,
     ShowExam,
+    Exam,
+    QuestionsForExam,
     TrueFalseQuestionEditor,
     MultipleChoiceQuestionEditor,
     ScreenA,
