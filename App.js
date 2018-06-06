@@ -20,6 +20,10 @@ import ShowAssignment from './components/ShowAssignment'
 import ShowExam from "./components/ShowExam";
 import Exam from "./components/Exam"
 import QuestionsForExam from "./components/QuestionsForExam"
+import Essay from "./components/Essay"
+import MultipleChoice from "./components/MultipleChoice"
+import TrueFalse from "./components/TrueFalse"
+import FillBlank from "./components/FillBlank"
 
 class Home extends React.Component {
     static navigationOptions = {
@@ -100,6 +104,10 @@ const App = createStackNavigator({
     ShowExam,
     Exam,
     QuestionsForExam,
+    MultipleChoice,
+    Essay,
+    TrueFalse,
+    FillBlank,
     TrueFalseQuestionEditor,
     MultipleChoiceQuestionEditor,
     ScreenA,
