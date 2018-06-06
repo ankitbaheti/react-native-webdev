@@ -12,6 +12,7 @@ class Essay extends React.Component {
             description: '',
             points: 0
         }
+        this.createQuestion = this.createQuestion.bind(this);
     }
 
     componentDidMount(){
@@ -23,10 +24,22 @@ class Essay extends React.Component {
         this.setState(newState)
     }
 
+    createQuestion(){
+        return fetch("http://10.0.0.197:8080/api/exam/"+this.state.examId+"/essay",{
+            body: JSON.stringify({title: this.state.title,
+                description: this.state.description,
+                points: this.state.points}),
+            headers: { 'Content-Type': 'application/json' },
+            method: 'POST'
+        }).then(function (response){
+            return response.json();
+        })
+    }
+
     render() {
         return (
             <ScrollView>
-                <FormLabel>Assignment Title</FormLabel>
+                <FormLabel>Essay Title</FormLabel>
                 <FormInput value={this.state.title} onChangeText={
                     text => this.updateForm({title: text})
                 }/>
@@ -37,7 +50,7 @@ class Essay extends React.Component {
                     </FormValidationMessage> : null}
 
 
-                <FormLabel>Assignment Description</FormLabel>
+                <FormLabel>Essay Description</FormLabel>
                 <FormInput value={this.state.description} onChangeText={
                     text => this.updateForm({description: text})
                 }/>
@@ -46,7 +59,7 @@ class Essay extends React.Component {
                         Description is required
                     </FormValidationMessage> : null}
 
-                <FormLabel>Assignment Points</FormLabel>
+                <FormLabel>Essay Points</FormLabel>
                 <FormInput value={this.state.points.toString()} onChangeText={
                     text => this.updateForm({points: text})
                 }/>
@@ -72,9 +85,10 @@ class Essay extends React.Component {
                     <Button title="Cancel"
                             onPress={() => this.props.navigation.goBack()}/>
                     <Button title="Submit"
-                                // onPress={() => {
-                                //     this.createAssignment();
-                                //     this.props.navigation.navigate("ShowAssignment", {lessonId: this.state.lessonId});}}
+                                onPress={() => {
+                                    this.createQuestion();
+                                    this.props.navigation.navigate("QuestionsForExam", {examId: this.state.examId});
+                                }}
                     />
                 </View>
                 <View style={{height: 60}}/>

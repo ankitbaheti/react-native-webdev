@@ -17,13 +17,23 @@ class QuestionsForExam extends React.Component {
     componentDidMount() {
         const examId = this.props.navigation.getParam("examId")
         this.setState({examId: examId})
-        // fetch("http://10.0.0.197:8080/api/lesson/"+lessonId+"/exam")
-        //     .then(response => (response.json()))
-        //     .then(exams => {
-        //         this.setState({exams: exams})
-        //     })
+        fetch("http://10.0.0.197:8080/api/exam/"+examId+"/questions")
+            .then(response => (response.json()))
+            .then(questions => {
+                this.setState({questions: questions})
+            })
 
     }
+
+    componentWillReceiveProps(newProps) {
+        const newExamId = newProps.navigation.getParam("examId")
+        fetch("http://10.0.0.197:8080/api/exam/" + newExamId + "/questions")
+            .then(response => (response.json()))
+            .then(questions => {
+                this.setState({questions: questions})
+            })
+    }
+
 
     createQuestion(){
         if(this.state.questionType === "MC")
@@ -32,7 +42,7 @@ class QuestionsForExam extends React.Component {
             this.props.navigation.navigate("Essay", {examId: this.state.examId})
         else if(this.state.questionType === "TF")
             this.props.navigation.navigate("TrueFalse", {examId: this.state.examId})
-        else if(this.state.questionType === "FB")
+        else if (this.state.questionType === "FB")
             this.props.navigation.navigate("FillBlank", {examId: this.state.examId})
     }
 
