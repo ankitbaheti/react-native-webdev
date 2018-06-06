@@ -11,8 +11,7 @@ class TrueFalse extends React.Component {
             title: '',
             description: '',
             points: 0,
-            isTrue: true,
-            answer: true
+            isTrue: true
         }
         this.createQuestion = this.createQuestion.bind(this)
     }
@@ -90,14 +89,10 @@ class TrueFalse extends React.Component {
 
                 <CheckBox
                     title='True'
-                    onPress={() => this.updateForm({answer: !this.state.answer})}
-                    checked={this.state.answer}
                 />
 
                 <CheckBox
                     title='False'
-                    onPress={() => this.updateForm({answer: !this.state.answer})}
-                    checked={!this.state.answer}
                 />
 
 

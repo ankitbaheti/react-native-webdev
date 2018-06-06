@@ -35,12 +35,13 @@ class Home extends React.Component {
     render() {
         return(
             <ScrollView>
-                <StatusBar barStyle="light-content"/>
-                <FixedHeader/>
+                <FillBlank/>
+                {/*<StatusBar barStyle="light-content"/>*/}
+                {/*<FixedHeader/>*/}
 
-                <Button title="Courses"
-                        onPress={() => this.props.navigation
-                            .navigate('CourseList') } />
+                {/*<Button title="Courses"*/}
+                        {/*onPress={() => this.props.navigation*/}
+                            {/*.navigate('CourseList') } />*/}
                 {/*<Button title="Go to Screen X"*/}
                         {/*onPress={() => this.props.navigation*/}
                             {/*.navigate('ScreenX') } />*/}
