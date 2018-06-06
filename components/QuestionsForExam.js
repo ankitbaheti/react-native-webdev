@@ -1,5 +1,5 @@
 import React from 'react'
-import {Picker, View} from 'react-native'
+import {Picker, View, ScrollView} from 'react-native'
 import {Text, Button, ListItem} from 'react-native-elements'
 
 class QuestionsForExam extends React.Component {
@@ -48,7 +48,7 @@ class QuestionsForExam extends React.Component {
 
     render() {
         return (
-            <View>
+            <ScrollView>
                 {this.state.questions.map(
                     (question, index) => (
                         <ListItem
@@ -68,7 +68,7 @@ class QuestionsForExam extends React.Component {
                 </Picker>
                 <Button title="create question"
                         onPress={() => this.createQuestion() }/>
-            </View>
+            </ScrollView>
         )
     }
 }
