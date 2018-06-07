@@ -25,7 +25,7 @@ class Exam extends React.Component{
     }
 
     createExam(){
-        return fetch("http://10.0.0.197:8080/api/lesson/"+this.state.lessonId+"/exam",{
+        return fetch("http://localhost:8080/api/lesson/"+this.state.lessonId+"/exam",{
             body: JSON.stringify({title: this.state.title,
                 description: this.state.description}),
             headers: { 'Content-Type': 'application/json' },
@@ -33,7 +33,7 @@ class Exam extends React.Component{
         }).then( (response) =>
             response.json()
                 .then((response1) => {
-                    this.props.navigation.navigate("QuestionsForExam", {examId: response1.id})
+                    this.props.navigation.navigate("QuestionsForExam", {examId: response1.id, lessonId: this.state.lessonId})
                 })
 
 
@@ -69,8 +69,10 @@ class Exam extends React.Component{
 
                 <View style={{flexDirection: 'row'}}>
                     <Button title="Cancel"
+                            backgroundColor="red"
                             onPress={() => this.props.navigation.goBack()}/>
                     <Button title="Submit"
+                            backgroundColor="blue"
                                 onPress={() => this.createExam()}/>
                 </View>
                 <View style={{height: 60}}/>

@@ -4,20 +4,36 @@ import {Text, FormLabel, FormInput, FormValidationMessage, Divider, Button} from
 
 class Essay extends React.Component {
 
+    static navigationOptions = {title: 'Essay'};
     constructor(props){
         super(props)
         this.state = {
             examId: 1,
+            questionId: 1,
             title: '',
             description: '',
-            points: 0
+            points: 0,
+            editable: false
         }
         this.createQuestion = this.createQuestion.bind(this);
+        this.updateQuestion = this.updateQuestion.bind(this);
+        this.deleteQuestion = this.deleteQuestion.bind(this);
     }
 
     componentDidMount(){
-        const examId = this.props.navigation.getParam("examId")
-        this.setState({examId: examId})
+        const examId = this.props.navigation.getParam("examId");
+        const question = this.props.navigation.getParam("question");
+        const editable = this.props.navigation.getParam("editable");
+        if(question===undefined)
+            this.setState({examId: examId});
+        else
+            this.setState({
+                examId: examId,
+                title: question.title,
+                description: question.description,
+                points: question.points,
+                editable: editable,
+                questionId: question.id})
     }
 
     updateForm(newState) {
@@ -25,7 +41,7 @@ class Essay extends React.Component {
     }
 
     createQuestion(){
-        return fetch("http://10.0.0.197:8080/api/exam/"+this.state.examId+"/essay",{
+        return fetch("http://localhost:8080/api/exam/"+this.state.examId+"/essay",{
             body: JSON.stringify({title: this.state.title,
                 description: this.state.description,
                 points: this.state.points}),
@@ -36,22 +52,43 @@ class Essay extends React.Component {
         })
     }
 
+    updateQuestion(){
+        return fetch("http://localhost:8080/api/essayquestion/"+this.state.questionId,{
+            body: JSON.stringify({title: this.state.title,
+                description: this.state.description,
+                points: this.state.points}),
+            headers: { 'Content-Type': 'application/json' },
+            method: 'PUT'
+        }).then(function (response){
+            return response.json();
+        })
+    }
+
+    deleteQuestion(){
+        return fetch("http://localhost:8080/api/question/"+this.state.questionId,{
+            method: 'DELETE'
+        })
+    }
+
     render() {
         return (
             <ScrollView>
                 <FormLabel>Essay Title</FormLabel>
-                <FormInput value={this.state.title} onChangeText={
-                    text => this.updateForm({title: text})
-                }/>
+                <TextInput value={this.state.title} style={{backgroundColor: 'white', margin: 5, height: 30}}
+                           onChangeText={
+                    text => this.updateForm({title: text})}/>
 
                 {this.state.title === '' ?
                     <FormValidationMessage>
                         Title is required
                     </FormValidationMessage> : null}
 
+                <Divider style={{backgroundColor:'black' }}/>
+
 
                 <FormLabel>Essay Description</FormLabel>
-                <FormInput value={this.state.description} onChangeText={
+                <TextInput value={this.state.description} style={{backgroundColor: 'white', margin: 5, height: 30}}
+                           onChangeText={
                     text => this.updateForm({description: text})
                 }/>
                 {this.state.description === '' ?
@@ -59,8 +96,11 @@ class Essay extends React.Component {
                         Description is required
                     </FormValidationMessage> : null}
 
+                <Divider style={{backgroundColor:'black' }}/>
+
                 <FormLabel>Essay Points</FormLabel>
-                <FormInput value={this.state.points.toString()} onChangeText={
+                <TextInput value={this.state.points.toString()} style={{backgroundColor: 'white', margin: 5, height: 30}}
+                           onChangeText={
                     text => this.updateForm({points: text})
                 }/>
 
@@ -69,29 +109,48 @@ class Essay extends React.Component {
                         Points is required
                     </FormValidationMessage> : null}
 
-                <Divider style={{
-                    backgroundColor:
-                        'blue' }}/>
-                <Text h2>Preview</Text>
-                <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
-                    <Text h3>{this.state.title}</Text>
-                    <Text h3>{this.state.points}pts</Text>
-                </View>
-                <Text>{this.state.description}</Text>
+                <Divider style={{backgroundColor:'black' }}/>
+                <Text h3>Preview</Text>
+                <View style={{backgroundColor: '#464b50', padding: 5}}>
+                    <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+                        <Text style={{color: 'white'}} h3>{this.state.title}</Text>
+                        <Text style={{color: 'white'}} h3>{this.state.points}pts</Text>
+                    </View>
+                    <Text style={{color: 'white', margin: 2}}>{this.state.description}</Text>
 
-                <TextInput multiline = {true}/>
+                    <TextInput multiline = {true} style={{backgroundColor: 'white', margin: 5, height: 80}}/>
 
-                <View style={{flexDirection: 'row'}}>
-                    <Button title="Cancel"
-                            onPress={() => this.props.navigation.goBack()}/>
-                    <Button title="Submit"
+                    <View style={{flexDirection: 'row'}}>
+                        <Button title="Cancel"
+                                backgroundColor="red"
+                                style={{margin: 5}}
+                                onPress={() => this.props.navigation.goBack()}/>
+
+                        {!this.state.editable ?
+                            <Button title="Submit"
+                                    backgroundColor="blue"
+                                    style={{margin: 5}}
+                                    onPress={() => {
+                                        this.createQuestion();
+                                        this.props.navigation.navigate("QuestionsForExam", {examId: this.state.examId});
+                                    }}/> :
+                            <Button title="Update"
+                                    backgroundColor="green"
+                                    style={{margin: 5}}
+                                    onPress={() => {
+                                        this.updateQuestion();
+                                        this.props.navigation.navigate("QuestionsForExam", {examId: this.state.examId});}}/>}
+
+                        {this.state.editable ?
+                        <Button title="Delete"
+                                backgroundColor="red"
+                                style={{margin: 5}}
                                 onPress={() => {
-                                    this.createQuestion();
-                                    this.props.navigation.navigate("QuestionsForExam", {examId: this.state.examId});
-                                }}
-                    />
+                                    this.deleteQuestion();
+                                    this.props.navigation.navigate("QuestionsForExam", {examId: this.state.examId});}}/> : null}
+                    </View>
+                    <View style={{height: 60}}/>
                 </View>
-                <View style={{height: 60}}/>
             </ScrollView>
         )
 

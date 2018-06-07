@@ -4,21 +4,38 @@ import {Text, FormLabel, FormInput, FormValidationMessage, Divider, Button, Chec
 
 class TrueFalse extends React.Component {
 
+    static navigationOptions = {title: 'True or False'};
     constructor(props){
         super(props)
         this.state = {
+            editable: false,
+            questionId: 1,
             examId: 1,
             title: '',
             description: '',
             points: 0,
             isTrue: true
         }
-        this.createQuestion = this.createQuestion.bind(this)
+        this.createQuestion = this.createQuestion.bind(this);
+        this.updateQuestion = this.updateQuestion.bind(this);
+        this.deleteQuestion = this.deleteQuestion.bind(this);
     }
 
     componentDidMount(){
-        const examId = this.props.navigation.getParam("examId")
-        this.setState({examId: examId})
+        const examId = this.props.navigation.getParam("examId");
+        const question = this.props.navigation.getParam("question");
+        const editable = this.props.navigation.getParam("editable");
+        if(question === undefined)
+            this.setState({examId: examId})
+        else
+            this.setState({
+                examId: examId,
+                title: question.title,
+                description: question.description,
+                points: question.points,
+                editable: editable,
+                questionId: question.id,
+                isTrue: question.isTrue})
     }
 
     updateForm(newState) {
@@ -26,7 +43,7 @@ class TrueFalse extends React.Component {
     }
 
     createQuestion(){
-        return fetch("http://10.0.0.197:8080/api/exam/"+this.state.examId+"/truefalse",{
+        return fetch("http://localhost:8080/api/exam/"+this.state.examId+"/truefalse",{
             body: JSON.stringify({title: this.state.title,
                 description: this.state.description,
                 points: this.state.points,
@@ -38,11 +55,31 @@ class TrueFalse extends React.Component {
         })
     }
 
+    updateQuestion(){
+        return fetch("http://localhost:8080/api/truefalse/"+this.state.questionId,{
+            body: JSON.stringify({title: this.state.title,
+                description: this.state.description,
+                points: this.state.points,
+                isTrue: this.state.isTrue}),
+            headers: { 'Content-Type': 'application/json' },
+            method: 'PUT'
+        }).then(function (response){
+            return response.json();
+        })
+    }
+
+    deleteQuestion(){
+        return fetch("http://localhost:8080/api/question/"+this.state.questionId,{
+            method: 'DELETE'
+        })
+    }
+
     render() {
         return (
             <ScrollView>
-                <FormLabel>Essay Title</FormLabel>
-                <FormInput value={this.state.title} onChangeText={
+                <FormLabel>True False Title</FormLabel>
+                <TextInput value={this.state.title} style={{backgroundColor: 'white', margin: 5, height: 30}}
+                           onChangeText={
                     text => this.updateForm({title: text})
                 }/>
 
@@ -51,9 +88,12 @@ class TrueFalse extends React.Component {
                         Title is required
                     </FormValidationMessage> : null}
 
+                <Divider style={{backgroundColor:'black' }}/>
 
-                <FormLabel>Essay Description</FormLabel>
-                <FormInput value={this.state.description} onChangeText={
+
+                <FormLabel>True False Description</FormLabel>
+                <TextInput value={this.state.description} style={{backgroundColor: 'white', margin: 5, height: 30}}
+                           onChangeText={
                     text => this.updateForm({description: text})
                 }/>
                 {this.state.description === '' ?
@@ -61,8 +101,11 @@ class TrueFalse extends React.Component {
                         Description is required
                     </FormValidationMessage> : null}
 
-                <FormLabel>Essay Points</FormLabel>
-                <FormInput value={this.state.points.toString()} onChangeText={
+                <Divider style={{backgroundColor:'black' }}/>
+
+                <FormLabel>True False Points</FormLabel>
+                <TextInput value={this.state.points.toString()} style={{backgroundColor: 'white', margin: 5, height: 30}}
+                           onChangeText={
                     text => this.updateForm({points: text})
                 }/>
 
@@ -71,42 +114,57 @@ class TrueFalse extends React.Component {
                         Points is required
                     </FormValidationMessage> : null}
 
+                <Divider style={{backgroundColor:'black' }}/>
+
                 <CheckBox
                     title='Check if correct answer is true'
                     onPress={() => this.updateForm({isTrue: !this.state.isTrue})}
                     checked={this.state.isTrue}
                 />
 
-                <Divider style={{
-                    backgroundColor:
-                        'blue' }}/>
-                <Text h2>Preview</Text>
-                <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
-                    <Text h3>{this.state.title}</Text>
-                    <Text h3>{this.state.points}pts</Text>
+                <Divider style={{backgroundColor:'black' }}/>
+                <Text h3>Preview</Text>
+                <View style={{backgroundColor: '#464b50', padding: 5}}>
+                    <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+                        <Text style={{color: 'white'}} h3>{this.state.title}</Text>
+                        <Text style={{color: 'white'}} h3>{this.state.points}pts</Text>
+                    </View>
+                    <Text style={{color: 'white', margin: 2}}>{this.state.description}</Text>
+
+                    <CheckBox title = 'True'/>
+
+                    <CheckBox title = 'False'/>
+
+
+                    <View style={{flexDirection: 'row'}}>
+                        <Button title="Cancel"
+                                backgroundColor="red"
+                                style={{margin: 5}}
+                                onPress={() => this.props.navigation.goBack()}/>
+                        {!this.state.editable ?
+                            <Button title="Submit"
+                                    backgroundColor="blue"
+                                    style={{margin: 5}}
+                                    onPress={() => {
+                                        this.createQuestion();
+                                        this.props.navigation.navigate("QuestionsForExam", {examId: this.state.examId});
+                                    }}/> :
+                            <Button title="Update"
+                                    backgroundColor="green"
+                                    style={{margin: 5}}
+                                    onPress={() => {
+                                        this.updateQuestion();
+                                        this.props.navigation.navigate("QuestionsForExam", {examId: this.state.examId});}}/>}
+                        {this.state.editable ?
+                            <Button title="Delete"
+                                    backgroundColor="red"
+                                    style={{margin: 5}}
+                                    onPress={() => {
+                                        this.deleteQuestion();
+                                        this.props.navigation.navigate("QuestionsForExam", {examId: this.state.examId});}}/> : null}
+                    </View>
+                    <View style={{height: 60}}/>
                 </View>
-                <Text>{this.state.description}</Text>
-
-                <CheckBox
-                    title='True'
-                />
-
-                <CheckBox
-                    title='False'
-                />
-
-
-                <View style={{flexDirection: 'row'}}>
-                    <Button title="Cancel"
-                            onPress={() => this.props.navigation.goBack()}/>
-                    <Button title="Submit"
-                            onPress={() => {
-                                this.createQuestion();
-                                this.props.navigation.navigate("QuestionsForExam", {examId: this.state.examId});
-                            }}
-                    />
-                </View>
-                <View style={{height: 60}}/>
             </ScrollView>
         )
     }

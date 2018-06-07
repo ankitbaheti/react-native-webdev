@@ -4,7 +4,7 @@ import {Text, FormLabel, FormInput, FormValidationMessage, Divider, Button} from
 
 class Assignment extends React.Component {
 
-    static navigationOptions = {title: 'New Assignment'}
+    static navigationOptions = {title: 'Assignment'}
     constructor(props){
         super(props)
         this.state = {
@@ -17,6 +17,7 @@ class Assignment extends React.Component {
         }
         this.createAssignment = this.createAssignment.bind(this);
         this.updateAssignment = this.updateAssignment.bind(this);
+        this.deleteQuestion = this.deleteQuestion.bind(this);
     }
 
     componentDidMount() {
@@ -40,7 +41,7 @@ class Assignment extends React.Component {
     }
 
     createAssignment(){
-        return fetch("http://10.0.0.197:8080/api/lesson/"+this.state.lessonId+"/assignment",{
+        return fetch("http://localhost:8080/api/lesson/"+this.state.lessonId+"/assignment",{
             body: JSON.stringify({title: this.state.title,
                 description: this.state.description,
                 points: this.state.points}),
@@ -52,7 +53,7 @@ class Assignment extends React.Component {
     }
 
     updateAssignment(){
-        return fetch("http://10.0.0.197:8080/api/assignment/"+this.state.assignmentId,{
+        return fetch("http://localhost:8080/api/assignment/"+this.state.assignmentId,{
             body: JSON.stringify({title: this.state.title,
                 description: this.state.description,
                 points: this.state.points}),
@@ -63,32 +64,40 @@ class Assignment extends React.Component {
         })
     }
 
+    deleteQuestion(){
+        return fetch("http://localhost:8080/api/assignment/"+this.state.assignmentId,{
+            method: 'DELETE'
+        })
+    }
+
     render(){
         return(
-            <ScrollView style={{padding: 20}}>
+            <ScrollView style={{padding: 10}}>
 
                 <FormLabel>Assignment Title</FormLabel>
-                <FormInput value={this.state.title} onChangeText={
-                    text => this.updateForm({title: text})
-                }/>
+                <TextInput  value={this.state.title}
+                            style={{backgroundColor: 'white', margin: 5, height: 30}}
+                            onChangeText={text => this.updateForm({title: text})}/>
 
                 {this.state.title === '' ?
                     <FormValidationMessage>
                     Title is required
                 </FormValidationMessage> : null}
 
+                <Divider style={{backgroundColor:'black' }}/>
 
                 <FormLabel>Assignment Description</FormLabel>
-                <FormInput value={this.state.description} onChangeText={
-                    text => this.updateForm({description: text})
-                }/>
+                <TextInput value={this.state.description}
+                           style={{backgroundColor: 'white', margin: 5, height: 30}}
+                           onChangeText={text => this.updateForm({description: text})}/>
                 {this.state.description === '' ?
                     <FormValidationMessage>
                         Description is required
                     </FormValidationMessage> : null}
-
+                <Divider style={{backgroundColor:'black' }}/>
                 <FormLabel>Assignment Points</FormLabel>
-                <FormInput value={this.state.points.toString()} onChangeText={
+                <TextInput value={this.state.points.toString()} style={{backgroundColor: 'white', margin: 5, height: 30}}
+                           onChangeText={
                     text => this.updateForm({points: text})
                 }/>
 
@@ -97,39 +106,52 @@ class Assignment extends React.Component {
                         Points is required
                     </FormValidationMessage> : null}
 
-                <Divider style={{
-                    backgroundColor:
-                        'blue' }}/>
-                <Text h2>Preview</Text>
-                <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
-                    <Text h3>{this.state.title}</Text>
-                    <Text h3>{this.state.points}pts</Text>
-                </View>
-                <Text>{this.state.description}</Text>
+                <Divider style={{backgroundColor:'black' }}/>
+                <Text h3>Preview</Text>
+                <View style={{backgroundColor: '#464b50', padding: 5}}>
+                    <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+                        <Text style={{color: 'white'}} h3>{this.state.title}</Text>
+                        <Text style={{color: 'white'}} h3>{this.state.points}pts</Text>
+                    </View>
+                    <Text style={{color: 'white', margin: 2}}>{this.state.description}</Text>
 
-                <Text h3>Essay</Text>
-                <TextInput multiline = {true}/>
+                    <Text style={{color: 'white'}} h4>Essay</Text>
+                    <TextInput multiline = {true} style={{backgroundColor: 'white', margin: 5, height: 80}}/>
 
-                <Text h3>Upload a file</Text>
-                <FormInput/>
+                    <Text style={{color: 'white'}} h4>Upload a file</Text>
+                    <TextInput style={{backgroundColor: 'white', margin: 5, height: 30}}/>
 
-                <Text h3>Submit a link</Text>
-                <FormInput/>
+                    <Text style={{color: 'white'}} h4>Submit a link</Text>
+                    <TextInput style={{backgroundColor: 'white', margin: 5, height: 30}}/>
 
-                <View style={{flexDirection: 'row'}}>
-                    <Button title="Cancel"
-                            onPress={() => this.props.navigation.goBack()}/>
-                    {!this.state.editable ?
-                    <Button title="Submit"
-                            onPress={() => {
-                                this.createAssignment();
-                                this.props.navigation.navigate("ShowAssignment", {lessonId: this.state.lessonId});}}/> :
-                        <Button title="Update"
+                    <View style={{flexDirection: 'row'}}>
+                        <Button title="Cancel"
+                                backgroundColor="red"
+                                style={{margin: 5}}
+                                onPress={() => this.props.navigation.goBack()}/>
+                        {!this.state.editable ?
+                        <Button title="Submit"
+                                backgroundColor="blue"
+                                style={{margin: 5}}
                                 onPress={() => {
-                                    this.updateAssignment();
-                                    this.props.navigation.navigate("ShowAssignment", {lessonId: this.state.lessonId});}}/>}
+                                    this.createAssignment();
+                                    this.props.navigation.navigate("ShowAssignment", {lessonId: this.state.lessonId});}}/> :
+                            <Button title="Update"
+                                    backgroundColor="green"
+                                    style={{margin: 5}}
+                                    onPress={() => {
+                                        this.updateAssignment();
+                                        this.props.navigation.navigate("ShowAssignment", {lessonId: this.state.lessonId});}}/>}
+                        {this.state.editable ?
+                            <Button title="Delete"
+                                    backgroundColor="red"
+                                    style={{margin: 5}}
+                                    onPress={() => {
+                                        this.deleteQuestion();
+                                        this.props.navigation.navigate("ShowAssignment", {lessonId: this.state.lessonId});}}/> : null}
+                    </View>
+                    <View style={{height: 60}}/>
                 </View>
-                <View style={{height: 60}}/>
 
             </ScrollView>
         )

@@ -35,63 +35,16 @@ class Home extends React.Component {
     render() {
         return(
             <ScrollView>
-                <FillBlank/>
-                {/*<StatusBar barStyle="light-content"/>*/}
-                {/*<FixedHeader/>*/}
+                <StatusBar barStyle="light-content"/>
+                <FixedHeader/>
 
-                {/*<Button title="Courses"*/}
-                        {/*onPress={() => this.props.navigation*/}
-                            {/*.navigate('CourseList') } />*/}
-                {/*<Button title="Go to Screen X"*/}
-                        {/*onPress={() => this.props.navigation*/}
-                            {/*.navigate('ScreenX') } />*/}
-                {/*<Button title="Go to Screen A"*/}
-                        {/*onPress={() => this.props.navigation*/}
-                            {/*.navigate('ScreenA') } />*/}
-                {/*<Button title="Go to Screen B"*/}
-                        {/*onPress={() => this.props.navigation*/}
-                            {/*.navigate('ScreenB') } />*/}
-
-
-                {/*<TrueFalseQuestionEditor/>*/}
-
-                {/*<QuestionTypeButtonGroupChooser/>*/}
-                {/*<QuestionTypePicker/>*/}
-
-                {/*<Exam/>*/}
-
-                {/*<Icons/>*/}
-                {/*<View style={{padding: 20}}>*/}
-                    {/*<TextHeadings/>*/}
-                {/*</View>*/}
+                <Button title="Courses"
+                        onPress={() => this.props.navigation
+                            .navigate('CourseList') } />
             </ScrollView>
         )
     }
 }
-
-class ScreenA extends React.Component {
-    static navigationOptions = {title: "Screen A"}
-    constructor(props) {
-        super(props)
-    }
-    render() {
-        return (
-            <View>
-                <Text h1>Screen A</Text>
-                <Button title="Go Home"
-                        onPress={() =>this.props
-                            .navigation
-                            .goBack()} />
-            </View>
-        )
-    }
-}
-
-const ScreenB = () => (
-    <View>
-        <Text h1>Screen B</Text>
-    </View>
-)
 
 const App = createStackNavigator({
     Home,

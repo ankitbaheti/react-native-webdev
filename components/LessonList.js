@@ -15,7 +15,7 @@ class LessonList extends Component {
   componentDidMount() {
     const {navigation} = this.props;
     const moduleId = navigation.getParam("moduleId")
-    fetch("http://10.0.0.197:8080/api/"+"/module/"+moduleId+"/lesson")
+    fetch("http://localhost:8080/api/"+"/module/"+moduleId+"/lesson")
       .then(response => (response.json()))
       .then(lessons => this.setState({lessons}))
   }

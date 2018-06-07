@@ -19,7 +19,7 @@ class ShowAssignment extends React.Component{
 
         const lessonId = this.props.navigation.getParam("lessonId")
         this.setState({lessonId: lessonId})
-        fetch("http://10.0.0.197:8080/api/lesson/"+lessonId+"/assignment")
+        fetch("http://localhost:8080/api/lesson/"+lessonId+"/assignment")
             .then(response => (response.json()))
             .then(assignments => {
                 this.setState({assignments: assignments})
@@ -29,7 +29,7 @@ class ShowAssignment extends React.Component{
 
     componentWillReceiveProps(newProps){
         const newLessonId = newProps.navigation.getParam("lessonId")
-        fetch("http://10.0.0.197:8080/api/lesson/"+newLessonId+"/assignment")
+        fetch("http://localhost:8080/api/lesson/"+newLessonId+"/assignment")
             .then(response => (response.json()))
             .then(assignments => {
                 this.setState({assignments: assignments})
@@ -45,9 +45,11 @@ class ShowAssignment extends React.Component{
                             onPress={() => this.props.navigation
                                 .navigate("Assignment", {assignment: assignment, lessonId: this.state.lessonId, editable: true})}
                             key={index}
+                            leftIcon={{name: 'subject'}}
                             subtitle={assignment.description}
                             title={assignment.title}/>))}
-                <Button title="create"
+                <Button title="Create Assignment"
+                        style={{margin: 5}}
                         onPress={() => this.props.navigation
                             .navigate("Assignment", {lessonId: this.state.lessonId}) }/>
             </View>

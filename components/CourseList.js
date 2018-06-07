@@ -6,7 +6,7 @@ class CourseList extends Component {
   static navigationOptions = {title: 'Courses'}
   constructor(props) {
     super(props)
-    fetch('http://10.0.0.197:8080/api/course')
+    fetch('http://localhost:8080/api/course')
       .then(response => (response.json()))
       .then(courses => {
         this.setState({courses: courses})
